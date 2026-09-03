@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>圖書分類大挑戰 - 小一自主學習</title>
+  <title>圖書分類大挑戰 - 小一小二自主學習版</title>
   <style>
     /* 全局樣式與 RWD 設定 */
     * {
@@ -27,27 +27,52 @@
       border-radius: 20px;
       box-shadow: 0 10px 25px rgba(0,0,0,0.15);
       width: 100%;
-      max-width: 600px;
+      max-width: 650px;
       padding: 25px;
       text-align: center;
       position: relative;
       border: 4px solid #4a90e2;
     }
 
-    /* 標題與資訊欄 */
     h1 {
       color: #2c3e50;
       font-size: 1.8rem;
-      margin-bottom: 10px;
+      margin-bottom: 15px;
     }
 
+    /* 等級選擇切換器 */
+    .level-select-container {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .level-btn {
+      padding: 8px 16px;
+      font-size: 1rem;
+      font-weight: bold;
+      border: 2px solid #3498db;
+      border-radius: 20px;
+      background-color: #ffffff;
+      color: #3498db;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .level-btn.active {
+      background-color: #3498db;
+      color: #ffffff;
+    }
+
+    /* 資訊狀態欄 */
     .status-bar {
       display: flex;
       justify-content: space-between;
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       font-weight: bold;
       color: #34495e;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
       background-color: #ebf5fb;
       padding: 10px 15px;
       border-radius: 12px;
@@ -58,9 +83,9 @@
       background: #fff8dc;
       border: 3px dashed #f39c12;
       border-radius: 15px;
-      padding: 30px 15px;
-      margin-bottom: 25px;
-      min-height: 160px;
+      padding: 25px 15px;
+      margin-bottom: 20px;
+      min-height: 140px;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -68,64 +93,69 @@
     }
 
     .book-title {
-      font-size: 1.8rem;
+      font-size: 1.7rem;
       font-weight: bold;
       color: #d35400;
-      margin-top: 10px;
+      margin-top: 8px;
       word-break: break-all;
     }
 
-    /* 按鈕樣式 */
-    .button-group {
-      display: flex;
-      gap: 15px;
-      justify-content: center;
+    /* 動態選項群組 (小一為 2 個，小二為 4-6 個) */
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      margin-bottom: 15px;
     }
 
-    .btn {
-      flex: 1;
-      padding: 18px 10px;
-      font-size: 1.3rem;
+    .btn-option {
+      padding: 15px 10px;
+      font-size: 1.1rem;
       font-weight: bold;
       border: none;
-      border-radius: 15px;
+      border-radius: 12px;
       cursor: pointer;
-      transition: transform 0.1s, background-color 0.2s;
-      box-shadow: 0 5px 0 rgba(0,0,0,0.2);
-    }
-
-    .btn:active {
-      transform: translateY(4px);
-      box-shadow: 0 1px 0 rgba(0,0,0,0.2);
-    }
-
-    .btn-info {
-      background-color: #2ecc71;
-      color: white;
-    }
-
-    .btn-non-info {
       background-color: #3498db;
       color: white;
+      transition: transform 0.1s, background-color 0.2s;
+      box-shadow: 0 4px 0 rgba(0,0,0,0.15);
+    }
+
+    .btn-option:active {
+      transform: translateY(3px);
+      box-shadow: 0 1px 0 rgba(0,0,0,0.15);
     }
 
     .btn-restart {
       background-color: #e67e22;
       color: white;
-      margin-top: 20px;
+      margin-top: 15px;
       padding: 12px 30px;
       font-size: 1.2rem;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: bold;
     }
 
-    /* 反饋訊息 */
+    /* 回饋與教學提示 */
     .feedback {
-      height: 30px;
-      font-size: 1.3rem;
+      min-height: 48px;
+      font-size: 1.2rem;
       font-weight: bold;
-      margin-top: 15px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
     }
     .correct { color: #27ae60; }
     .wrong { color: #c0392b; }
+    .tip-text {
+      font-size: 0.95rem;
+      color: #7f8c8d;
+      margin-top: 4px;
+      font-weight: normal;
+    }
 
     /* 結果彈窗 Modal */
     .modal {
@@ -143,51 +173,45 @@
 
     .modal-content {
       background-color: #ffffff;
-      /* 設定背景圖片為相對路徑 happy.png，若為 jpg 可修改檔名 */
+      /* 背景圖片相對路徑 happy.png */
       background-image: url('happy.png'); 
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
       border-radius: 20px;
-      padding: 30px;
+      padding: 25px;
       width: 90%;
       max-width: 450px;
       text-align: center;
       box-shadow: 0 5px 15px rgba(0,0,0,0.3);
       border: 5px solid #f1c40f;
-      position: relative;
     }
 
-    /* 半透明遮罩，確保文字清楚 */
     .modal-overlay {
-      background-color: rgba(255, 255, 255, 0.85);
+      background-color: rgba(255, 255, 255, 0.88);
       padding: 20px;
       border-radius: 15px;
     }
 
     .modal-title {
-      font-size: 2rem;
+      font-size: 1.8rem;
       color: #2c3e50;
       margin-bottom: 10px;
     }
 
     .score-display {
-      font-size: 1.8rem;
+      font-size: 1.6rem;
       color: #e74c3c;
       font-weight: bold;
       margin: 15px 0;
     }
 
-    /* 手機平板極致適應 */
     @media (max-width: 480px) {
-      .button-group {
-        flex-direction: column;
+      .options-grid {
+        grid-template-columns: 1fr;
       }
       .book-title {
-        font-size: 1.5rem;
-      }
-      .btn {
-        font-size: 1.1rem;
+        font-size: 1.4rem;
       }
     }
   </style>
@@ -197,61 +221,105 @@
   <div class="game-container">
     <h1>📚 圖書分類大挑戰</h1>
     
+    <!-- 等級切換選單 -->
+    <div class="level-select-container">
+      <button class="level-btn active" id="btn-p1" onclick="switchLevel('P1')">🌱 小一 (初級)</button>
+      <button class="level-btn" id="btn-p2" onclick="switchLevel('P2')">🚀 小二 (高級·杜威分類)</button>
+    </div>
+
     <div class="status-bar">
       <span>第 <span id="current-question">1</span> / 10 題</span>
       <span>得分：<span id="score">0</span> 分</span>
     </div>
 
     <div class="book-card">
-      <div>📖 請分類這本書：</div>
+      <div id="card-prompt">📖 請為這本書分類：</div>
       <div class="book-title" id="book-title">載入中...</div>
     </div>
 
-    <div class="button-group">
-      <button class="btn btn-info" onclick="checkAnswer('knowledge')">💡 知識類圖書</button>
-      <button class="btn btn-non-info" onclick="checkAnswer('non-knowledge')">🏰 故事類圖書</button>
-    </div>
+    <!-- 動態生成選項視窗 -->
+    <div class="options-grid" id="options-container"></div>
 
+    <!-- 答題反饋區 -->
     <div class="feedback" id="feedback"></div>
   </div>
 
+  <!-- 結算視窗 -->
   <div class="modal" id="result-modal">
     <div class="modal-content">
       <div class="modal-overlay">
         <div class="modal-title">🎉 挑戰完成！</div>
         <div class="score-display">你一共得到 <span id="final-score">0</span> / 10 分！</div>
         <p id="eval-text" style="font-size: 1.1rem; font-weight: bold; color: #34495e;"></p>
-        <button class="btn btn-restart" onclick="restartGame()">再玩一次 🔄</button>
+        <button class="btn-restart" onclick="restartGame()">再玩一次 🔄</button>
       </div>
     </div>
   </div>
 
   <script>
-    // 適合香港小一學生的題目庫 (知識類 vs 故事類)
-    const questionBank = [
-      { title: "《恐龍百科全書》", type: "knowledge" },
-      { title: "《白雪公主》", type: "non-knowledge" },
-      { title: "《神奇的植物世界》", type: "knowledge" },
-      { title: "《三隻小豬》", type: "non-knowledge" },
-      { title: "《香港野生動物圖鑑》", type: "knowledge" },
-      { title: "《小紅帽》", type: "non-knowledge" },
-      { title: "《宇宙與行星秘話》", type: "knowledge" },
-      { title: "《伊索寓言故事》", type: "non-knowledge" },
-      { title: "《認識我們的身體》", type: "knowledge" },
-      { title: "《丑小鴨》", type: "non-knowledge" },
-      { title: "《交通工具大集合》", type: "knowledge" },
-      { title: "《睡美人》", type: "non-knowledge" },
-      { title: "《海洋生物小知識》", type: "knowledge" },
-      { title: "《灰姑娘》", type: "non-knowledge" },
-      { title: "《天氣的變化》", type: "knowledge" }
+    // 1. 小一題庫 (知識類 vs 故事類)
+    const p1Questions = [
+      { title: "《恐龍大百科》", answer: "knowledge" },
+      { title: "《白雪公主》", answer: "story" },
+      { title: "《神奇的植物世界》", answer: "knowledge" },
+      { title: "《三隻小豬》", answer: "story" },
+      { title: "《香港野生動物圖鑑》", answer: "knowledge" },
+      { title: "《小紅帽》", answer: "story" },
+      { title: "《認識我們的體內器官》", answer: "knowledge" },
+      { title: "《伊索寓言故事》", answer: "story" },
+      { title: "《宇宙與九大行星》", answer: "knowledge" },
+      { title: "《醜小鴨歷險記》", answer: "story" },
+      { title: "《交通工具演變史》", answer: "knowledge" },
+      { title: "《睡美人》", answer: "story" }
     ];
 
+    const p1Options = [
+      { label: "💡 知識類圖書", value: "knowledge", color: "#2ecc71" },
+      { label: "📖 故事類圖書", value: "story", color: "#e74c3c" }
+    ];
+
+    // 2. 小二題庫 (杜威十進分類法 - 適合小二常見大類)
+    const deweyCategories = {
+      "100": "100 哲學類",
+      "300": "300 社會科學",
+      "500": "500 自然科學",
+      "600": "600 應用科學",
+      "700": "700 藝術與休閒",
+      "800": "800 文學類"
+    };
+
+    const p2Questions = [
+      { title: "《香港小學生活與法律知識》", answer: "300" },
+      { title: "《世界各國傳統節日習俗》", answer: "300" },
+      { title: "《有趣的昆蟲圖鑑》", answer: "500" },
+      { title: "《太陽系與神秘黑洞》", answer: "500" },
+      { title: "《神奇的機器人與AI技術》", answer: "600" },
+      { title: "《從小學會身體保健與飲食》", answer: "600" },
+      { title: "《兒童摺紙與手工藝大全》", answer: "700" },
+      { title: "《世界名畫繪畫入門》", answer: "700" },
+      { title: "《安徒生童話全集》", answer: "800" },
+      { title: "《成語故事與小學詩詞》", answer: "800" },
+      { title: "《認識自己與學習思考》", answer: "100" },
+      { title: "《汽車與高鐵是如何運作的》", answer: "600" }
+    ];
+
+    const p2Options = [
+      { label: "100 哲學類", value: "100", color: "#9b59b6" },
+      { label: "300 社會科學", value: "300", color: "#3498db" },
+      { label: "500 自然科學", value: "500", color: "#2ecc71" },
+      { label: "600 應用科學", value: "600", color: "#e67e22" },
+      { label: "700 藝術與休閒", value: "700", color: "#1abc9c" },
+      { label: "800 文學類", value: "800", color: "#e74c3c" }
+    ];
+
+    // 遊戲狀態變數
+    let currentLevel = 'P1'; // 'P1' 或 'P2'
     let currentQuestions = [];
     let currentIndex = 0;
     let score = 0;
     let canAnswer = true;
 
-    // Web Audio API 音效產生器 (無須外部音效檔)
+    // 音效合成器
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
     function playSound(isCorrect) {
@@ -264,7 +332,6 @@
       gain.connect(audioCtx.destination);
 
       if (isCorrect) {
-        // 正確音效：高音雙響 (Ding-Dong)
         osc.type = 'sine';
         osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
         osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1); // E5
@@ -273,7 +340,6 @@
         osc.start(audioCtx.currentTime);
         osc.stop(audioCtx.currentTime + 0.3);
       } else {
-        // 錯誤音效：低音嘟聲 (Buzz)
         osc.type = 'sawtooth';
         osc.frequency.setValueAtTime(150, audioCtx.currentTime);
         gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
@@ -283,52 +349,84 @@
       }
     }
 
-    // 初始化遊戲（隨機抽 10 題）
+    // 切換難度等級
+    function switchLevel(level) {
+      currentLevel = level;
+      document.getElementById('btn-p1').classList.toggle('active', level === 'P1');
+      document.getElementById('btn-p2').classList.toggle('active', level === 'P2');
+      initGame();
+    }
+
+    // 初始化每局遊戲
     function initGame() {
-      // 隨機打亂題庫並取前10題
-      let shuffled = [...questionBank].sort(() => 0.5 - Math.random());
+      const bank = currentLevel === 'P1' ? p1Questions : p2Questions;
+      let shuffled = [...bank].sort(() => 0.5 - Math.random());
       currentQuestions = shuffled.slice(0, 10);
-      
+
       currentIndex = 0;
       score = 0;
       canAnswer = true;
 
       document.getElementById('score').innerText = score;
       document.getElementById('result-modal').style.display = 'none';
-      document.getElementById('feedback').innerText = '';
+      document.getElementById('feedback').innerHTML = '';
 
+      renderOptionButtons();
       showQuestion();
+    }
+
+    // 動態生成選項按鈕
+    function renderOptionButtons() {
+      const container = document.getElementById('options-container');
+      container.innerHTML = '';
+      const options = currentLevel === 'P1' ? p1Options : p2Options;
+
+      options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'btn-option';
+        btn.style.backgroundColor = opt.color;
+        btn.innerText = opt.label;
+        btn.onclick = () => checkAnswer(opt.value);
+        container.appendChild(btn);
+      });
     }
 
     // 顯示當前題目
     function showQuestion() {
       document.getElementById('current-question').innerText = currentIndex + 1;
       document.getElementById('book-title').innerText = currentQuestions[currentIndex].title;
-      document.getElementById('feedback').innerText = '';
+      document.getElementById('feedback').innerHTML = '';
       canAnswer = true;
     }
 
     // 檢查答案
-    function checkAnswer(selectedType) {
+    function checkAnswer(selectedVal) {
       if (!canAnswer) return;
       canAnswer = false;
 
       const currentQ = currentQuestions[currentIndex];
       const feedbackEl = document.getElementById('feedback');
 
-      if (selectedType === currentQ.type) {
+      if (selectedVal === currentQ.answer) {
         score++;
         document.getElementById('score').innerText = score;
         feedbackEl.className = "feedback correct";
-        feedbackEl.innerText = "答對了！太棒了！👏";
+        feedbackEl.innerHTML = "答對了！太棒了！👏";
         playSound(true);
       } else {
         feedbackEl.className = "feedback wrong";
-        feedbackEl.innerText = "答錯了，加油！💪";
+        
+        // 如果是小二杜威分類，錯誤時給予提示說明
+        if (currentLevel === 'P2') {
+          const correctCatName = deweyCategories[currentQ.answer];
+          feedbackEl.innerHTML = `答錯了，再接再厲！💪 <div class="tip-text">💡 提示：《${currentQ.title}》屬於 <b>${correctCatName}</b></div>`;
+        } else {
+          feedbackEl.innerHTML = "答錯了，加油！💪";
+        }
         playSound(false);
       }
 
-      // 1 秒後進入下一題或結算
+      // 等待 1.5 秒讓學生閱讀提示後進入下一題
       setTimeout(() => {
         currentIndex++;
         if (currentIndex < 10) {
@@ -336,32 +434,29 @@
         } else {
           endGame();
         }
-      }, 1000);
+      }, 1500);
     }
 
-    // 每局結束處理
+    // 結束畫面處理
     function endGame() {
       document.getElementById('final-score').innerText = score;
       const evalText = document.getElementById('eval-text');
       
       if (score === 10) {
-        evalText.innerText = "太厲害了！你是圖書分類小達人！🌟";
+        evalText.innerText = "滿分！你是優秀的「圖書分類小達人」！🌟";
       } else if (score >= 7) {
-        evalText.innerText = "表現很好！繼續保持！很棒喔！👍";
+        evalText.innerText = "表現非常好！繼續保持課外閱讀的好習慣喔！👍";
       } else {
-        evalText.innerText = "再試一次，你一定可以做得更好！✨";
+        evalText.innerText = "多去學校圖書館看看，下一次一定會拿高分！✨";
       }
 
-      // 顯示彈窗視窗
       document.getElementById('result-modal').style.display = 'flex';
     }
 
-    // 重啟遊戲
     function restartGame() {
       initGame();
     }
 
-    // 頁面載入後自動開啟遊戲
     window.onload = initGame;
   </script>
 </body>
