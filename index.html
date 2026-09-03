@@ -37,35 +37,84 @@
     h1 {
       color: #2c3e50;
       font-size: 1.8rem;
-      margin-bottom: 15px;
+      margin-bottom: 10px;
     }
 
-    /* 等級選擇切換器 */
-    .level-select-container {
+    .sub-title {
+      color: #7f8c8d;
+      font-size: 1.1rem;
+      margin-bottom: 25px;
+    }
+
+    /* 階段 1：首頁等級選擇界面 */
+    #start-screen {
       display: flex;
-      justify-content: center;
-      gap: 10px;
+      flex-direction: column;
+      gap: 15px;
+      margin: 20px 0;
+    }
+
+    .level-card {
+      background: #f8f9fa;
+      border: 3px solid #e0e0e0;
+      border-radius: 15px;
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: left;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .level-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+    }
+
+    .level-card.p1 { border-color: #2ecc71; }
+    .level-card.p1:hover { background-color: #e8f8f5; }
+
+    .level-card.p2 { border-color: #3498db; }
+    .level-card.p2:hover { background-color: #ebf5fb; }
+
+    .level-icon {
+      font-size: 2.5rem;
+    }
+
+    .level-info h3 {
+      font-size: 1.3rem;
+      color: #2c3e50;
+      margin-bottom: 5px;
+    }
+
+    .level-info p {
+      font-size: 0.95rem;
+      color: #7f8c8d;
+    }
+
+    /* 階段 2：遊戲界面 (預設隱藏) */
+    #game-screen {
+      display: none;
+    }
+
+    .header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       margin-bottom: 15px;
     }
 
-    .level-btn {
-      padding: 8px 16px;
-      font-size: 1rem;
-      font-weight: bold;
-      border: 2px solid #3498db;
-      border-radius: 20px;
-      background-color: #ffffff;
-      color: #3498db;
+    .btn-back {
+      background: #e74c3c;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 8px;
       cursor: pointer;
-      transition: all 0.2s;
+      font-weight: bold;
     }
 
-    .level-btn.active {
-      background-color: #3498db;
-      color: #ffffff;
-    }
-
-    /* 資訊狀態欄 */
     .status-bar {
       display: flex;
       justify-content: space-between;
@@ -100,7 +149,7 @@
       word-break: break-all;
     }
 
-    /* 動態選項群組 (小一為 2 個，小二為 4-6 個) */
+    /* 動態選項群組 */
     .options-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -130,12 +179,13 @@
       background-color: #e67e22;
       color: white;
       margin-top: 15px;
-      padding: 12px 30px;
-      font-size: 1.2rem;
+      padding: 12px 25px;
+      font-size: 1.1rem;
       border: none;
       border-radius: 12px;
       cursor: pointer;
       font-weight: bold;
+      margin-right: 5px;
     }
 
     /* 回饋與教學提示 */
@@ -173,7 +223,6 @@
 
     .modal-content {
       background-color: #ffffff;
-      /* 背景圖片相對路徑 happy.png */
       background-image: url('happy.png'); 
       background-size: cover;
       background-position: center;
@@ -207,57 +256,81 @@
     }
 
     @media (max-width: 480px) {
-      .options-grid {
-        grid-template-columns: 1fr;
-      }
-      .book-title {
-        font-size: 1.4rem;
-      }
+      .options-grid { grid-template-columns: 1fr; }
+      .book-title { font-size: 1.4rem; }
+      .level-card { padding: 15px; }
     }
   </style>
 </head>
 <body>
 
   <div class="game-container">
-    <h1>📚 圖書分類大挑戰</h1>
     
-    <!-- 等級切換選單 -->
-    <div class="level-select-container">
-      <button class="level-btn active" id="btn-p1" onclick="switchLevel('P1')">🌱 小一 (初級)</button>
-      <button class="level-btn" id="btn-p2" onclick="switchLevel('P2')">🚀 小二 (高級·杜威分類)</button>
+    <!-- 階段 1：選擇等級首頁 -->
+    <div id="start-screen">
+      <h1>📚 圖書分類大挑戰</h1>
+      <p class="sub-title">請選擇你的年級開始遊戲：</p>
+
+      <div class="level-card p1" onclick="selectLevel('P1')">
+        <div class="level-icon">🌱</div>
+        <div class="level-info">
+          <h3>小一初級挑戰</h3>
+          <p>分類：知識類圖書 vs 故事類圖書</p>
+        </div>
+      </div>
+
+      <div class="level-card p2" onclick="selectLevel('P2')">
+        <div class="level-icon">🚀</div>
+        <div class="level-info">
+          <h3>小二高級挑戰</h3>
+          <p>分類：杜威十進分類法（十類圖書大挑戰）</p>
+        </div>
+      </div>
     </div>
 
-    <div class="status-bar">
-      <span>第 <span id="current-question">1</span> / 10 題</span>
-      <span>得分：<span id="score">0</span> 分</span>
+    <!-- 階段 2：遊戲進行界面 -->
+    <div id="game-screen">
+      <div class="header-bar">
+        <span id="level-badge" style="font-weight: bold; color: #34495e;"></span>
+        <button class="btn-back" onclick="showStartScreen()">🏠 返回主頁</button>
+      </div>
+      
+      <div class="status-bar">
+        <span>第 <span id="current-question">1</span> / 10 題</span>
+        <span>得分：<span id="score">0</span> 分</span>
+      </div>
+
+      <div class="book-card">
+        <div>📖 請為這本書分類：</div>
+        <div class="book-title" id="book-title">載入中...</div>
+      </div>
+
+      <!-- 動態按鈕 -->
+      <div class="options-grid" id="options-container"></div>
+
+      <!-- 答題反饋 -->
+      <div class="feedback" id="feedback"></div>
     </div>
 
-    <div class="book-card">
-      <div id="card-prompt">📖 請為這本書分類：</div>
-      <div class="book-title" id="book-title">載入中...</div>
-    </div>
-
-    <!-- 動態生成選項視窗 -->
-    <div class="options-grid" id="options-container"></div>
-
-    <!-- 答題反饋區 -->
-    <div class="feedback" id="feedback"></div>
   </div>
 
-  <!-- 結算視窗 -->
+  <!-- 每局結算彈窗 Modal -->
   <div class="modal" id="result-modal">
     <div class="modal-content">
       <div class="modal-overlay">
         <div class="modal-title">🎉 挑戰完成！</div>
         <div class="score-display">你一共得到 <span id="final-score">0</span> / 10 分！</div>
         <p id="eval-text" style="font-size: 1.1rem; font-weight: bold; color: #34495e;"></p>
-        <button class="btn-restart" onclick="restartGame()">再玩一次 🔄</button>
+        <div style="margin-top: 15px;">
+          <button class="btn-restart" onclick="restartGame()">再玩一次 🔄</button>
+          <button class="btn-restart" style="background-color: #3498db;" onclick="showStartScreen()">選其他等級 🏠</button>
+        </div>
       </div>
     </div>
   </div>
 
   <script>
-    // 1. 小一題庫 (知識類 vs 故事類)
+    // 小一題庫 (知識類 vs 故事類)
     const p1Questions = [
       { title: "《恐龍大百科》", answer: "knowledge" },
       { title: "《白雪公主》", answer: "story" },
@@ -278,7 +351,7 @@
       { label: "📖 故事類圖書", value: "story", color: "#e74c3c" }
     ];
 
-    // 2. 小二題庫 (杜威十進分類法 - 適合小二常見大類)
+    // 小二題庫 (杜威十進分類法)
     const deweyCategories = {
       "100": "100 哲學類",
       "300": "300 社會科學",
@@ -312,14 +385,13 @@
       { label: "800 文學類", value: "800", color: "#e74c3c" }
     ];
 
-    // 遊戲狀態變數
-    let currentLevel = 'P1'; // 'P1' 或 'P2'
+    let currentLevel = 'P1';
     let currentQuestions = [];
     let currentIndex = 0;
     let score = 0;
     let canAnswer = true;
 
-    // 音效合成器
+    // Web Audio API 音效
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
     function playSound(isCorrect) {
@@ -333,8 +405,8 @@
 
       if (isCorrect) {
         osc.type = 'sine';
-        osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
-        osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1); // E5
+        osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); 
+        osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1); 
         gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
         osc.start(audioCtx.currentTime);
@@ -349,15 +421,24 @@
       }
     }
 
-    // 切換難度等級
-    function switchLevel(level) {
+    // 回到首頁選擇等級
+    function showStartScreen() {
+      document.getElementById('result-modal').style.display = 'none';
+      document.getElementById('game-screen').style.display = 'none';
+      document.getElementById('start-screen').style.display = 'flex';
+    }
+
+    // 選擇等級並開始遊戲
+    function selectLevel(level) {
       currentLevel = level;
-      document.getElementById('btn-p1').classList.toggle('active', level === 'P1');
-      document.getElementById('btn-p2').classList.toggle('active', level === 'P2');
+      document.getElementById('start-screen').style.display = 'none';
+      document.getElementById('game-screen').style.display = 'block';
+
+      document.getElementById('level-badge').innerText = level === 'P1' ? '🌱 小一初級' : '🚀 小二高級';
       initGame();
     }
 
-    // 初始化每局遊戲
+    // 初始化題目
     function initGame() {
       const bank = currentLevel === 'P1' ? p1Questions : p2Questions;
       let shuffled = [...bank].sort(() => 0.5 - Math.random());
@@ -375,7 +456,6 @@
       showQuestion();
     }
 
-    // 動態生成選項按鈕
     function renderOptionButtons() {
       const container = document.getElementById('options-container');
       container.innerHTML = '';
@@ -391,7 +471,6 @@
       });
     }
 
-    // 顯示當前題目
     function showQuestion() {
       document.getElementById('current-question').innerText = currentIndex + 1;
       document.getElementById('book-title').innerText = currentQuestions[currentIndex].title;
@@ -399,7 +478,6 @@
       canAnswer = true;
     }
 
-    // 檢查答案
     function checkAnswer(selectedVal) {
       if (!canAnswer) return;
       canAnswer = false;
@@ -415,18 +493,15 @@
         playSound(true);
       } else {
         feedbackEl.className = "feedback wrong";
-        
-        // 如果是小二杜威分類，錯誤時給予提示說明
         if (currentLevel === 'P2') {
           const correctCatName = deweyCategories[currentQ.answer];
-          feedbackEl.innerHTML = `答錯了，再接再厲！💪 <div class="tip-text">💡 提示：《${currentQ.title}》屬於 <b>${correctCatName}</b></div>`;
+          feedbackEl.innerHTML = `答錯了！<div class="tip-text">💡 提示：《${currentQ.title}》屬於 <b>${correctCatName}</b></div>`;
         } else {
           feedbackEl.innerHTML = "答錯了，加油！💪";
         }
         playSound(false);
       }
 
-      // 等待 1.5 秒讓學生閱讀提示後進入下一題
       setTimeout(() => {
         currentIndex++;
         if (currentIndex < 10) {
@@ -437,7 +512,6 @@
       }, 1500);
     }
 
-    // 結束畫面處理
     function endGame() {
       document.getElementById('final-score').innerText = score;
       const evalText = document.getElementById('eval-text');
@@ -456,8 +530,6 @@
     function restartGame() {
       initGame();
     }
-
-    window.onload = initGame;
   </script>
 </body>
 </html>
